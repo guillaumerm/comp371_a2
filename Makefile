@@ -150,32 +150,32 @@ src/Camera.cpp.s:
 	$(MAKE) -f CMakeFiles/COMP371_A2.dir/build.make CMakeFiles/COMP371_A2.dir/src/Camera.cpp.s
 .PHONY : src/Camera.cpp.s
 
-src/Object.o: src/Object.cpp.o
+src/Light.o: src/Light.cpp.o
 
-.PHONY : src/Object.o
+.PHONY : src/Light.o
 
 # target to build an object file
-src/Object.cpp.o:
-	$(MAKE) -f CMakeFiles/COMP371_A2.dir/build.make CMakeFiles/COMP371_A2.dir/src/Object.cpp.o
-.PHONY : src/Object.cpp.o
+src/Light.cpp.o:
+	$(MAKE) -f CMakeFiles/COMP371_A2.dir/build.make CMakeFiles/COMP371_A2.dir/src/Light.cpp.o
+.PHONY : src/Light.cpp.o
 
-src/Object.i: src/Object.cpp.i
+src/Light.i: src/Light.cpp.i
 
-.PHONY : src/Object.i
+.PHONY : src/Light.i
 
 # target to preprocess a source file
-src/Object.cpp.i:
-	$(MAKE) -f CMakeFiles/COMP371_A2.dir/build.make CMakeFiles/COMP371_A2.dir/src/Object.cpp.i
-.PHONY : src/Object.cpp.i
+src/Light.cpp.i:
+	$(MAKE) -f CMakeFiles/COMP371_A2.dir/build.make CMakeFiles/COMP371_A2.dir/src/Light.cpp.i
+.PHONY : src/Light.cpp.i
 
-src/Object.s: src/Object.cpp.s
+src/Light.s: src/Light.cpp.s
 
-.PHONY : src/Object.s
+.PHONY : src/Light.s
 
 # target to generate assembly for a file
-src/Object.cpp.s:
-	$(MAKE) -f CMakeFiles/COMP371_A2.dir/build.make CMakeFiles/COMP371_A2.dir/src/Object.cpp.s
-.PHONY : src/Object.cpp.s
+src/Light.cpp.s:
+	$(MAKE) -f CMakeFiles/COMP371_A2.dir/build.make CMakeFiles/COMP371_A2.dir/src/Light.cpp.s
+.PHONY : src/Light.cpp.s
 
 src/main.o: src/main.cpp.o
 
@@ -216,9 +216,9 @@ help:
 	@echo "... src/Camera.o"
 	@echo "... src/Camera.i"
 	@echo "... src/Camera.s"
-	@echo "... src/Object.o"
-	@echo "... src/Object.i"
-	@echo "... src/Object.s"
+	@echo "... src/Light.o"
+	@echo "... src/Light.i"
+	@echo "... src/Light.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

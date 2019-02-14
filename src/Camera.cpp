@@ -1,16 +1,17 @@
 #include "Camera.h"
 
 Camera::Camera(){
-    this->position = glm::vec3(0.0f, 0.0f, 55.0f); /*!< Position of the camera */
+    this->position = glm::vec3(0.0f, 0.0f, 40.0f); /*!< Position of the camera */
 	this->front = glm::vec3(0.0f, 0.0f, -1.0f); /*!< Front of the camera */
 	this->up = glm::vec3(0.0f, 1.0f, 0.0f); /*!< Up of the camera */
 	this->fov = 45.0f; /*!< FOV of the camera */
+	this->speed = 1.0f;
 }
 
 Camera::~Camera(){}
 
 glm::vec3 Camera::right() const {
-	return glm::normalize(glm::cross(this->front, this->up));
+	return  glm::normalize(glm::cross(this->front, this->up));
 }
 
 void Camera::pitch(float degree){
@@ -62,4 +63,5 @@ void Camera::reset() {
 	this->front = glm::vec3(0.0f, 0.0f, -1.0f);
 	this->up = glm::vec3(0.0f, 1.0f, 0.0f);
 	this->fov = 45.0f;
+	this->speed = 1.0f;
 }

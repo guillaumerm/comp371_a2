@@ -11,7 +11,7 @@ find_package(GLEW REQUIRED)
 find_package(GLFW3 REQUIRED)
 find_package(GLM REQUIRED)
 
-set(cpps "./src/main.cpp" "./src/Camera.cpp" "./src/Object.cpp")
+set(cpps "./src/main.cpp" "./src/Camera.cpp" "./src/Light.cpp")
 
 add_executable(COMP371_A2 ${cpps} ${headers})
 

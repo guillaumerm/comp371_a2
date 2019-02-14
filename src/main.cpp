@@ -11,7 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Camera.h"
-#include "Object.h"
+#include "Light.h"
 #include "OBJloader.h"  //include the object loadr
 #include "shaderloader.h"
 using namespace std;
@@ -21,7 +21,27 @@ const GLuint WIDTH = 800, HEIGHT = 800;
 GLFWwindow *window;
 
 Camera camera = Camera();
-Object object = Object();
+Light light = Light(glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.0f, 20.0f, 5.0f));
+bool normalAsObjectColor = false;
+
+// 
+//Struct that contains all variables and behaviors related to the object
+struct {
+	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f); /*!< Position of the object */
+	glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f); /*!< Current scale of the object */
+	float pitch = 0.0f; /*!< Current pitch of the object */
+	float yaw = 0.0f; /*!< Current yuw of the object */
+	float roll = 0.0f; /*!< Current roll of the object */
+
+	//! Reset the object to its initial configurations.
+	void reset() {
+		position = glm::vec3(0.0f, 0.0f, 0.0f);
+		scale = glm::vec3(1.0f, 1.0f, 1.0f);
+		pitch = 0.0f;
+		yaw = 0.0f;
+		roll = 0.0f;
+	}
+} object;
 
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
@@ -34,6 +54,7 @@ static void cursor_position_callback(GLFWwindow* window, double xpos, double ypo
 
 	//Move into/out of the scene (assumed that means chaning fov) only when GLFW_MOUSE_BUTTON_LEFT is press
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+		// TODO
 	}
 	
 	// Keeping track of ypos
@@ -70,16 +91,16 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		camera.moveBackward();
 	}
 	else if (key == GLFW_KEY_A) {
-		camera.moveRight();
-	}
-	else if (key == GLFW_KEY_D) {
 		camera.moveLeft();
 	}
+	else if (key == GLFW_KEY_D) {
+		camera.moveRight();
+	}
 	else if (key == GLFW_KEY_UP) {
-		camera.pitch(-5.0f);
+		camera.pitch(5.0f);
 	}
 	else if (key == GLFW_KEY_DOWN) {
-		camera.pitch(5.0f);
+		camera.pitch(-5.0f);
 	}
 	else if (key == GLFW_KEY_RIGHT) {
 		camera.yaw(5.0f);
@@ -88,49 +109,75 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		camera.yaw(-5.0f);
 	}
 	else if (key == GLFW_KEY_J) {
-		object.translate(glm::vec3(1.0f, 0.0f, 0.0f));
+		object.position.x += 1.0f;
 	}
 	else if (key == GLFW_KEY_L) {
-		object.translate(glm::vec3(-1.0f, 0.0f, 0.0f));
+		object.position.x -= 1.0f;
 	}
 	else if (key == GLFW_KEY_I) {
-		object.translate(glm::vec3(0.0f, 1.0f, 0.0f));
+		object.position.y += 1.0f;
 	}
 	else if (key == GLFW_KEY_K) {
-		object.translate(glm::vec3(0.0f, -1.0f, 0.0f));
+		object.position.y -= 1.0f;
 	}
 	else if (key == GLFW_KEY_PAGE_UP) {
-		object.translate(glm::vec3(0.0f, 0.0f, 1.0f));
+		object.position.z += 1.0f;
 	}
 	else if (key == GLFW_KEY_PAGE_DOWN) {
-		object.translate(glm::vec3(0.0f, 0.0f, -1.0f));
+		object.position.z -= 1.0f;
 	}
 	else if (key == GLFW_KEY_O) {
-		object.setScale(glm::vec3(1.1f, 1.1f, 1.1f));
+		object.scale.x = object.scale.y = object.scale.z *= 1.10f;
 	}
 	else if (key == GLFW_KEY_P) {
-		object.setScale(glm::vec3(0.9f, 0.9f, 0.9f));
+		object.scale.x = object.scale.y = object.scale.z *= 0.9f;
 	}
 	else if (key == GLFW_KEY_B) {
-		if(object.getPitch() + 1.0f > 360.0f){
-			object.setPitch(0.0f);
+		if(object.pitch + 1.0f > 360.0f){
+			object.pitch = 0.0f;
 		} else {
-			object.setPitch(object.getPitch() + 1.0f);
+			object.pitch += 1.0f;
 		}
 	}
 	else if (key == GLFW_KEY_N) {
-		if(object.getYaw() + 1.0f > 360.0f){
-			object.setYaw(0.0f);
+		if(object.yaw + 1.0f > 360.0f){
+			object.yaw = 0.0f;
 		} else {
-			object.setYaw(object.getYaw() + 1.0f);
+			object.yaw += 1.0f;
 		}
 	}
 	else if (key == GLFW_KEY_E) {
-		if(object.getRoll() + 1.0f > 360.0f){
-			object.setRoll(0.0f);
+		if(object.roll + 1.0f > 360.0f){
+			object.roll = 0.0f;
 		} else {
-			object.setRoll(object.getRoll() + 1.0f);
+			object.roll += 1.0f;
 		}
+	}
+	else if (key == GLFW_KEY_1) {
+		light.toggleChannel(Light::CHANNELS::R);
+	}
+	else if (key == GLFW_KEY_2) {
+		light.toggleChannel(Light::CHANNELS::G);
+	}
+	else if (key == GLFW_KEY_3) {
+		light.toggleChannel(Light::CHANNELS::B);
+	}
+	else if (key == GLFW_KEY_4) {
+		light.toggleChannel(Light::CHANNELS::R, true);
+		light.toggleChannel(Light::CHANNELS::G, true);
+		light.toggleChannel(Light::CHANNELS::B, true);
+	}
+	else if (key == GLFW_KEY_5) {
+		// TODO toggle Goraud/Phong shading
+	}
+	else if (key == GLFW_KEY_6) {
+		light.toggle();
+	}
+	else if (key == GLFW_KEY_M) {
+		normalAsObjectColor = !normalAsObjectColor;
+	}
+	else if (key == GLFW_KEY_G) {
+		light.toggleGrayscale();
 	}
 }
 
@@ -202,7 +249,11 @@ int main()
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> UVs;
+
 	loadOBJ("./objects/cube.obj", indices, vertices, normals, UVs); //read the vertices from the cat.obj file
+
+	std::cout << indices.size() << std::endl;
+	std::cout << normals.size() << std::endl;
 
 	GLuint VAO;
 	glGenVertexArrays(1, &VAO);
@@ -218,10 +269,9 @@ int main()
 	GLuint normalsVBO;
 	glGenBuffers(1, &normalsVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, normalsVBO);
-	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &vertices.front(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals.front(), GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(1);
-
 
 	GLuint EBO;
 	glGenBuffers(1, &EBO);
@@ -230,6 +280,13 @@ int main()
 
 	glBindVertexArray(0);
 
+	// Passing the ambient, diffuse and specular coefficients
+	glUniform1f(glGetUniformLocation(shader, "ambientCoefficient"), 0.25f);
+	glUniform1f(glGetUniformLocation(shader, "diffuseCoefficient"), 0.75f);
+	glUniform1f(glGetUniformLocation(shader, "specularCoefficient"), 1.0f);
+	glUniform3fv(glGetUniformLocation(shader, "objectColor"), 1, glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.75f)));
+	glUniform3fv(glGetUniformLocation(shader, "lightPosition"), 1, glm::value_ptr(light.getPosition()));
+	
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -250,29 +307,32 @@ int main()
 
 		// Constructing the ctm (camera transformation matrix)
 		
-		model = glm::scale(model, object.getScale());
+		model = glm::scale(model, object.scale);
 		// Construct the model_rotation matrix
-		glm::mat4 model_rotation = glm::rotate(glm::mat4(1.0f), glm::radians(object.getRoll()), glm::vec3(0,0,1))*glm::rotate(glm::mat4(1.0f), glm::radians(object.getYaw()), glm::vec3(0, 1, 0))* glm::rotate(glm::mat4(1.0f), glm::radians(object.getPitch()), glm::vec3(1,0,0));
+		glm::mat4 model_rotation = glm::rotate(glm::mat4(1.0f), glm::radians(object.roll), glm::vec3(0,0,1))*glm::rotate(glm::mat4(1.0f), glm::radians(object.yaw), glm::vec3(0, 1, 0))* glm::rotate(glm::mat4(1.0f), glm::radians(object.pitch), glm::vec3(1,0,0));
 		model *= model_rotation;
-		model = glm::translate(model, object.getPosition());
+		model = glm::translate(model, object.position);
 
 		view = glm::lookAt(camera.getPosition(), camera.getFront() + camera.getPosition(), camera.getUp());
 
 		projection = glm::perspective(glm::radians(camera.getFov()), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
 
 		//Passing the ctm (camera transformation matrix) to the shaders
-		int modelLocation = glGetUniformLocation(shader, "model");
-		int viewLocation = glGetUniformLocation(shader, "view");
-		int projectionLocation = glGetUniformLocation(shader, "projection");
-		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
-		glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniform3fv(glGetUniformLocation(shader, "lightColor"), 1, glm::value_ptr(glm::vec3(1,1,1)));
-		glUniform3fv(glGetUniformLocation(shader, "objectColor"), 1, glm::value_ptr(glm::vec3(1,0,0)));
-		glUniform3fv(glGetUniformLocation(shader, "lightPosition"), 1, glm::value_ptr(glm::vec3(0,5,0)));
+		glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		
+		// Change lighting depending on the camera position
 		glUniform3fv(glGetUniformLocation(shader, "viewPosition"), 1, glm::value_ptr(camera.getPosition()));
 
+		// Set the color of the light
+		glUniform3fv(glGetUniformLocation(shader, "lightColor"), 1, glm::value_ptr(light.getColor()));
+
+		// Set the color of the vertex as the normal
+		glUniform1i(glGetUniformLocation(shader, "normalAsObjectColor"), normalAsObjectColor);
+
 		glBindVertexArray(VAO);
+		//glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
