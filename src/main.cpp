@@ -250,7 +250,7 @@ int main()
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> UVs;
 
-	loadOBJ("./objects/cube.obj", indices, vertices, normals, UVs); //read the vertices from the cat.obj file
+	loadOBJ("./objects/heracles.obj", indices, vertices, normals, UVs); //read the vertices from the cat.obj file
 
 	std::cout << indices.size() << std::endl;
 	std::cout << normals.size() << std::endl;
