@@ -23,6 +23,7 @@ GLFWwindow *window;
 Camera camera = Camera();
 Light light = Light(glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.0f, 20.0f, 5.0f));
 bool normalAsObjectColor = false;
+bool gouraudActive = false;
 
 // 
 //Struct that contains all variables and behaviors related to the object
@@ -45,7 +46,7 @@ struct {
 
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	//Keeps the previsou ypos of the cursor
+//Keeps the previsou ypos of the cursor
 	static double prev_ypos = -1;
 
 	//Initialize the prev_ypos if first cursor_position_callback
@@ -54,7 +55,13 @@ static void cursor_position_callback(GLFWwindow* window, double xpos, double ypo
 
 	//Move into/out of the scene (assumed that means chaning fov) only when GLFW_MOUSE_BUTTON_LEFT is press
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-		// TODO
+		double ypos_delta = prev_ypos - ypos;
+		// Move the camera in/out of the scene proportionally.
+		if (ypos_delta > 0) {
+			camera.moveForward();
+		} else if (ypos_delta < 0) {
+			camera.moveBackward();
+		}
 	}
 	
 	// Keeping track of ypos
@@ -168,7 +175,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		light.toggleChannel(Light::CHANNELS::B, true);
 	}
 	else if (key == GLFW_KEY_5) {
-		// TODO toggle Goraud/Phong shading
+		gouraudActive = !gouraudActive;
 	}
 	else if (key == GLFW_KEY_6) {
 		light.toggle();
@@ -286,6 +293,11 @@ int main()
 	glUniform1f(glGetUniformLocation(shader, "specularCoefficient"), 1.0f);
 	glUniform3fv(glGetUniformLocation(shader, "objectColor"), 1, glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.75f)));
 	glUniform3fv(glGetUniformLocation(shader, "lightPosition"), 1, glm::value_ptr(light.getPosition()));
+	glUniform1f(glGetUniformLocation(shader, "vertexAmbientCoefficient"), 0.25f);
+	glUniform1f(glGetUniformLocation(shader, "vertexDiffuseCoefficient"), 0.75f);
+	glUniform1f(glGetUniformLocation(shader, "vertexSpecularCoefficient"), 1.0f);
+	glUniform3fv(glGetUniformLocation(shader, "vertexObjectColor"), 1, glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.75f)));
+	glUniform3fv(glGetUniformLocation(shader, "vertexLightPosition"), 1, glm::value_ptr(light.getPosition()));
 	
 	// Game loop
 	while (!glfwWindowShouldClose(window))
@@ -324,13 +336,18 @@ int main()
 		
 		// Change lighting depending on the camera position
 		glUniform3fv(glGetUniformLocation(shader, "viewPosition"), 1, glm::value_ptr(camera.getPosition()));
+		glUniform3fv(glGetUniformLocation(shader, "vertexViewPosition"), 1, glm::value_ptr(camera.getPosition()));
 
 		// Set the color of the light
 		glUniform3fv(glGetUniformLocation(shader, "lightColor"), 1, glm::value_ptr(light.getColor()));
+		glUniform3fv(glGetUniformLocation(shader, "vertexLightColor"), 1, glm::value_ptr(light.getColor()));
 
 		// Set the color of the vertex as the normal
 		glUniform1i(glGetUniformLocation(shader, "normalAsObjectColor"), normalAsObjectColor);
 
+		// Set the shading
+		glUniform1i(glGetUniformLocation(shader, "gouraudActive"), gouraudActive);
+		
 		glBindVertexArray(VAO);
 		//glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
