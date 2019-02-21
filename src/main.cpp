@@ -288,11 +288,15 @@ int main()
 	glBindVertexArray(0);
 
 	// Passing the ambient, diffuse and specular coefficients
+
+	// For Phong
 	glUniform1f(glGetUniformLocation(shader, "ambientCoefficient"), 0.25f);
 	glUniform1f(glGetUniformLocation(shader, "diffuseCoefficient"), 0.75f);
 	glUniform1f(glGetUniformLocation(shader, "specularCoefficient"), 1.0f);
 	glUniform3fv(glGetUniformLocation(shader, "objectColor"), 1, glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.75f)));
 	glUniform3fv(glGetUniformLocation(shader, "lightPosition"), 1, glm::value_ptr(light.getPosition()));
+
+	// For Gouraud
 	glUniform1f(glGetUniformLocation(shader, "vertexAmbientCoefficient"), 0.25f);
 	glUniform1f(glGetUniformLocation(shader, "vertexDiffuseCoefficient"), 0.75f);
 	glUniform1f(glGetUniformLocation(shader, "vertexSpecularCoefficient"), 1.0f);

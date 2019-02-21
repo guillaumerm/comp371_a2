@@ -20,29 +20,32 @@ in vec3 fragmentPosition;
 void main()
 {
     vec3 result;
-
-    if(normalAsObjectColor == 1){
-        result = normal;
-    } else {
-        // Ambient
-        vec3 ambient = ambientCoefficient * lightColor;
-
-        // Diffuse
-        vec3 lightDirection = normalize(lightPosition - fragmentPosition);
-        float diffuseStrength = max(dot(normalize(normal), lightDirection), 0.0f);
-        vec3 diffuse = diffuseCoefficient * diffuseStrength * lightColor;
-
-        // Specular
-        vec3 viewDirection = normalize(viewPosition - fragmentPosition);
-        vec3 reflectedLightDirection = reflect(-lightDirection, normalize(normal));
-        float specularStrength = pow(max(dot(reflectedLightDirection, viewDirection), 0.0f), 32);
-        vec3 specular = specularCoefficient * specularStrength * lightColor;
-
-        result = (ambient + diffuse + specular) * objectColor;
-    }
+    
+    // If aColor is different of vec3(-1,-1,-1) then Gouraud shading is active
     if(aColor != vec3(-1, -1, -1)) {
-        color = vec4(aColor, 1.0f);
-    }else {
-        color = vec4(result, 1.0f);
+        result = aColor;
+    } else {
+        // If the normal is the Object color else normal Phong shading
+        if(normalAsObjectColor == 1){
+            result = normal;
+        } else {
+            // Ambient
+            vec3 ambient = ambientCoefficient * lightColor;
+
+            // Diffuse
+            vec3 lightDirection = normalize(lightPosition - fragmentPosition);
+            float diffuseStrength = max(dot(normalize(normal), lightDirection), 0.0f);
+            vec3 diffuse = diffuseCoefficient * diffuseStrength * lightColor;
+
+            // Specular
+            vec3 viewDirection = normalize(viewPosition - fragmentPosition);
+            vec3 reflectedLightDirection = reflect(-lightDirection, normalize(normal));
+            float specularStrength = pow(max(dot(reflectedLightDirection, viewDirection), 0.0f), 32);
+            vec3 specular = specularCoefficient * specularStrength * lightColor;
+
+            result = (ambient + diffuse + specular) * objectColor;
+        }
     }
+
+    color = vec4(result, 1.0f);
 } 

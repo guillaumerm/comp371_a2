@@ -26,8 +26,10 @@ out vec3 aColor;
 
 void main()
 {
+    // Calculate the normal
     normal = mat3(transpose(inverse(model))) * normals;
     
+    // If Gouraud shading is active calculate the shading else return aColor vec3 of negative values
     if (gouraudActive == 1) {
         // Ambient
         vec3 ambient = vertexAmbientCoefficient * vertexLightColor;
@@ -47,6 +49,8 @@ void main()
     } else {
         aColor = vec3(-1, -1, -1);
     }
+
     fragmentPosition = vec3(model * vec4(position, 1.0f));
+    
     gl_Position = projection * view * model * vec4(position.x, position.y, position.z, 1.0);
 }
