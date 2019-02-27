@@ -344,6 +344,7 @@ int main()
 
 		//Set the light state
 		glUniform1i(glGetUniformLocation(shader, "lightActive"), light.isActive());
+		glUniform1i(glGetUniformLocation(shader, "vertexLightActive"), light.isActive());
 
 		// Set the color of the light
 		glUniform3fv(glGetUniformLocation(shader, "lightColor"), 1, glm::value_ptr(light.getColor()));
@@ -351,6 +352,7 @@ int main()
 
 		// Set the color of the vertex as the normal
 		glUniform1i(glGetUniformLocation(shader, "normalAsObjectColor"), normalAsObjectColor);
+		glUniform1i(glGetUniformLocation(shader, "vertexNormalAsObjectColor"), normalAsObjectColor);
 
 		// Set the shading
 		glUniform1i(glGetUniformLocation(shader, "gouraudActive"), gouraudActive);
