@@ -16,9 +16,6 @@ Light::Light(glm::vec3 color, glm::vec3 position) {
 }
 
 glm::vec3 Light::getColor() {
-    if(!this->active) {
-        return glm::vec3(0.0f, 0.0f, 0.0f);
-    }
     glm::vec3 tempLightColor = this->color;
 
 	// Adjust the active channels and the color scales
@@ -34,6 +31,10 @@ glm::vec3 Light::getColor() {
 
 void Light::toggle() {
     this->active = !this->active;
+}
+
+bool Light::isActive() {
+    return this->active;
 }
 
 glm::vec3 Light::getPosition() {

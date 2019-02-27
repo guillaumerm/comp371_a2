@@ -56,6 +56,12 @@ class Light {
         //! Toggle the active state of the light
         void toggle();
 
+        //! Returns the active state of the light
+        /*!
+        \return True if active, false otherwise
+        */
+        bool isActive();
+
         //! Toggle the grayscale of the light
         void toggleGrayscale();
 };

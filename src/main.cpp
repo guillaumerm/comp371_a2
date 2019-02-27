@@ -104,10 +104,10 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		camera.moveRight();
 	}
 	else if (key == GLFW_KEY_UP) {
-		camera.pitch(5.0f);
+		camera.pitch(-5.0f);
 	}
 	else if (key == GLFW_KEY_DOWN) {
-		camera.pitch(-5.0f);
+		camera.pitch(5.0f);
 	}
 	else if (key == GLFW_KEY_RIGHT) {
 		camera.yaw(5.0f);
@@ -293,14 +293,14 @@ int main()
 	glUniform1f(glGetUniformLocation(shader, "ambientCoefficient"), 0.25f);
 	glUniform1f(glGetUniformLocation(shader, "diffuseCoefficient"), 0.75f);
 	glUniform1f(glGetUniformLocation(shader, "specularCoefficient"), 1.0f);
-	glUniform3fv(glGetUniformLocation(shader, "objectColor"), 1, glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.75f)));
+	glUniform3fv(glGetUniformLocation(shader, "objectColor"), 1, glm::value_ptr(glm::vec3(0.9019607843f, 0.912f, 0.864f)));
 	glUniform3fv(glGetUniformLocation(shader, "lightPosition"), 1, glm::value_ptr(light.getPosition()));
 
 	// For Gouraud
 	glUniform1f(glGetUniformLocation(shader, "vertexAmbientCoefficient"), 0.25f);
 	glUniform1f(glGetUniformLocation(shader, "vertexDiffuseCoefficient"), 0.75f);
 	glUniform1f(glGetUniformLocation(shader, "vertexSpecularCoefficient"), 1.0f);
-	glUniform3fv(glGetUniformLocation(shader, "vertexObjectColor"), 1, glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.75f)));
+	glUniform3fv(glGetUniformLocation(shader, "vertexObjectColor"), 1, glm::value_ptr(glm::vec3(0.9019607843f, 0.912f, 0.864f)));
 	glUniform3fv(glGetUniformLocation(shader, "vertexLightPosition"), 1, glm::value_ptr(light.getPosition()));
 	
 	// Game loop
@@ -341,6 +341,9 @@ int main()
 		// Change lighting depending on the camera position
 		glUniform3fv(glGetUniformLocation(shader, "viewPosition"), 1, glm::value_ptr(camera.getPosition()));
 		glUniform3fv(glGetUniformLocation(shader, "vertexViewPosition"), 1, glm::value_ptr(camera.getPosition()));
+
+		//Set the light state
+		glUniform1i(glGetUniformLocation(shader, "lightActive"), light.isActive());
 
 		// Set the color of the light
 		glUniform3fv(glGetUniformLocation(shader, "lightColor"), 1, glm::value_ptr(light.getColor()));

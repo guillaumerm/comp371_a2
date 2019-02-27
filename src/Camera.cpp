@@ -17,6 +17,7 @@ glm::vec3 Camera::right() const {
 void Camera::pitch(float degree){
     glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(degree), this->right());
 	this->front = glm::vec3(glm::vec4(this->front, 0) * rotation);
+	this->up = glm::vec3(glm::vec4(this->up, 0) * rotation);
 }
 
 void Camera::yaw(float degree) {
