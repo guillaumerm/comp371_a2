@@ -11,6 +11,9 @@ uniform float ambientCoefficient;
 uniform float diffuseCoefficient;
 uniform float specularCoefficient;
 
+uniform vec3 activeChannels;
+uniform vec3 colorScale;
+
 uniform int normalAsObjectColor;
 uniform int lightActive;
 
@@ -59,6 +62,7 @@ void main()
         result = calculateColor();
     }
 
-    color = vec4(result, 1.0f);
+    // Times the active channels and the color scale
+    color = vec4(result * activeChannels * colorScale, 1.0f);
 }
 

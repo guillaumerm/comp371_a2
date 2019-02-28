@@ -350,6 +350,12 @@ int main()
 		glUniform3fv(glGetUniformLocation(shader, "lightColor"), 1, glm::value_ptr(light.getColor()));
 		glUniform3fv(glGetUniformLocation(shader, "vertexLightColor"), 1, glm::value_ptr(light.getColor()));
 
+		// Set the active channels
+		glUniform3fv(glGetUniformLocation(shader, "activeChannels"), 1, glm::value_ptr(glm::vec3(light.getActiveChannels()[0], light.getActiveChannels()[1], light.getActiveChannels()[2])));
+		
+		// Set the color scale
+		glUniform3fv(glGetUniformLocation(shader, "colorScale"), 1, glm::value_ptr(glm::vec3(light.getColorScale()[0], light.getColorScale()[1], light.getColorScale()[2])));
+
 		// Set the color of the vertex as the normal
 		glUniform1i(glGetUniformLocation(shader, "normalAsObjectColor"), normalAsObjectColor);
 		glUniform1i(glGetUniformLocation(shader, "vertexNormalAsObjectColor"), normalAsObjectColor);

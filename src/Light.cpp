@@ -41,6 +41,20 @@ glm::vec3 Light::getPosition() {
     return this->position;
 }
 
+const int *Light::getActiveChannels() {
+    const int tempActiveChannels[3] = {
+        this->activeColorChannels[0],
+        this->activeColorChannels[1],
+        this->activeColorChannels[2]
+    };
+
+    return tempActiveChannels;
+}
+
+const float *Light::getColorScale(){
+    return this->scaleColorChannels;
+}
+
 void Light::toggleChannel(Light::CHANNELS channel) {
     this->toggleChannel(channel, !this->activeColorChannels[channel]);
 }

@@ -62,6 +62,18 @@ class Light {
         */
         bool isActive();
 
+        //! Returns the current color scale for the light
+        /*!
+        \return A constant array pointer to the color scale.
+        */
+       const float *getColorScale();
+
+        //! Retuns the current active color channels
+        /*!
+        \return Am array containing the active color channels.
+        */
+       const int *getActiveChannels();
+
         //! Toggle the grayscale of the light
         void toggleGrayscale();
 };
